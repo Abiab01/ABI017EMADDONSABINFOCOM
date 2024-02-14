@@ -1,0 +1,32 @@
+<odoo>
+    <record model="ir.ui.view" id="res_config_settings_view_form_inhherit">
+        <field name="name">res.config.settings.form</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@id='contacts_settings']" position="after">
+                <div id="id_custom_sequence">
+                    <block title="Customer Sequence" name="customer_sequence">
+                        <setting help="Automatically create customer sequence" title="Automatically create customer sequence" id="is_seq_auto_create">
+                            <field name="is_seq_auto_create"/>
+                        </setting>
+                    </block>
+                </div>
+<!--                <h2>Customer Sequence</h2>-->
+<!--                <div class="row mt16 o_settings_container" name="customer_sequence">-->
+<!--                    <div class="col-12 col-lg-6 o_setting_box" id="is_seq_auto_create">-->
+<!--                        <div class="o_setting_left_pane">-->
+<!--                            <field name="is_seq_auto_create"/>-->
+<!--                        </div>-->
+<!--                        <div class="o_setting_right_pane">-->
+<!--                            <label string="Auto Create" for="is_seq_auto_create"/>-->
+<!--                            <div class="text-muted">-->
+<!--                                Automatically create customer sequence-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+            </xpath>
+        </field>
+    </record>
+</odoo>

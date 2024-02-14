@@ -1,0 +1,107 @@
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="res_partner_kanban_view_inherit">
+            <field name="name">res.partner.kanban</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.res_partner_kanban_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//strong[@class='o_kanban_record_title oe_partner_heading']" position="before">
+                    <strong><field name="code"/></strong><br/>
+                </xpath>
+            </field>
+        </record>
+
+<!--        <record model="ir.ui.view" id="view_partner_tree_inherit">-->
+<!--            <field name="name">res.partner.tree</field>-->
+<!--            <field name="model">res.partner</field>-->
+<!--            <field name="inherit_id" ref="base.view_partner_tree"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <xpath expr="//field[@name='display_name']" position="before">-->
+<!--                    <field name="code"/>-->
+<!--                </xpath>-->
+<!--            </field>-->
+<!--        </record>-->
+
+        <record model="ir.ui.view" id="view_partner_form_inherit">
+            <field name="name">res.partner.form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+<!--                <xpath expr="//form//sheet" position="before">-->
+<!--                    <header>-->
+<!--                        <button type="object"-->
+<!--                                name="create_code"-->
+<!--                                string="Update Customer Code"-->
+<!--                                class="oe_highlight"-->
+<!--                                attrs="{'invisible':['|',('code','!=',False),'|',('is_seq_auto_create','=',True),('id','=',False)]}"/>-->
+<!--                    </header>-->
+<!--                </xpath>-->
+                <xpath expr="//field[@name='category_id']" position="after">
+                    <field name="is_seq_auto_create" invisible="1"/>
+                </xpath>
+                <xpath expr="//sheet//h1" position="before">
+                    <h2>
+                        <field id="code" class="text-break" name="code" default_focus="1" readonly="1"/>
+                    </h2>
+                </xpath>
+            </field>
+        </record>
+
+
+
+
+
+
+
+        <record model="ir.ui.view" id="res_partner_kanban_view_vendor_inherit">
+            <field name="name">res.partner.kanban.vendor</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.res_partner_kanban_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//strong[@class='o_kanban_record_title oe_partner_heading']" position="before">
+                    <strong><field name="code_for_vendor"/></strong><br/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Vendor Tree View -->
+<!--        <record model="ir.ui.view" id="view_partner_tree_vendor_inherit">-->
+<!--            <field name="name">res.partner.tree.vendor</field>-->
+<!--            <field name="model">res.partner</field>-->
+<!--            <field name="inherit_id" ref="base.view_partner_tree"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <xpath expr="//field[@name='display_name']" position="before">-->
+<!--                    <field name="code_for_vendor"/>-->
+<!--                </xpath>-->
+<!--            </field>-->
+<!--        </record>-->
+
+        <!-- Vendor Form View -->
+        <record model="ir.ui.view" id="view_partner_form_vendor_inherit">
+            <field name="name">res.partner.form.vendor</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+<!--                <xpath expr="//form//sheet" position="before">-->
+<!--                    <header>-->
+<!--                        <button type="object"-->
+<!--                                name="create_code"-->
+<!--                                string="Update Vendor Code"-->
+<!--                                class="oe_highlight"-->
+<!--                                attrs="{'invisible':['|',('code_for_vendor','!=',False),'|',('is_seq_auto_create','=',True),('id','=',False)]}"/>-->
+<!--                    </header>-->
+<!--                </xpath>-->
+                <xpath expr="//field[@name='category_id']" position="after">
+                    <field name="is_seq_auto_create" invisible="1"/>
+                </xpath>
+                <xpath expr="//sheet//h1" position="before">
+                    <h2>
+                        <field id="code_for_vendor" class="text-break" name="code_for_vendor" default_focus="1" readonly="1"/>
+                    </h2>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

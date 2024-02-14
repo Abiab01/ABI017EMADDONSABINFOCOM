@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+<!--        <record id="abi_user_management_hr_employee_form" model="ir.ui.view">-->
+<!--            <field name="name">abi.user.management.form.inherit</field>-->
+<!--            <field name="model">hr.employee</field>-->
+<!--            <field name="inherit_id" ref="hr.view_employee_form"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <xpath expr="//header" position="inside">-->
+<!--                    <button type="object" class="oe_highlight" name="open_portal_wiz" string="Make User" />-->
+<!--                </xpath>-->
+<!--            </field>-->
+<!--        </record>-->
+        <record id="abi_user_management_hr_department_form" model="ir.ui.view">
+            <field name="name">abi.user.management.form.inherit</field>
+            <field name="model">hr.department</field>
+            <field name="inherit_id" ref="hr.view_department_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[1]" position="after">
+                    <group string="User Groups">
+                        <field name="user_groups_id" widget="one2many_list"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

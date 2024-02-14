@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- The top margin on the default A4 format is way too big -->
+        <record id="paperformat_custom_invoice" model="report.paperformat">
+            <field name="name">A4 - statement</field>
+            <field name="default" eval="True"/>
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">0</field>
+            <field name="margin_bottom">32</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">0</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <record id="account.account_invoices" model="ir.actions.report">
+            <field name="name">In Invoices</field>
+            <field name="paperformat_id" ref="paperformat_custom_invoice"/>
+        </record>
+
+        <template id="report_invoice_document" inherit_id="account.report_invoice_document">
+            <xpath expr="//t" position="replace">
+                <t t-call="web.external_layout">
+                    <style>
+                        p{
+                            font-size: 18px;
+                        }
+                        #heading{border: 1px solid black;}
+                        #seller_div{border: 1px solid black; border-top: none;}
+                        #invoice_div{border: 1px solid black; border-top: none; border-left: none;}
+                        #buyer_div{border: 1px solid black; border-top: none;}
+                        #terms_div{border: 1px solid black; border-top: none; border-left: none;}
+                        #invoice{border-right: 1px solid black; border-bottom: 1px solid black;}
+                        #invoice_date{border-bottom: 1px solid black;}
+                        #payment{border-right: 1px solid black; height: auto;}
+                        #declaration{border: 1px solid black;}
+                        #declaration2{border: 1px solid black; border-top: none;}
+                        #signature{border: 1px solid black; border-left: none; border-top: none;}
+                    </style>
+
+
+                    <div class="row m-0" id="heading">
+                        <div class="col">
+                            <h4 class="text-center fw-bold">Invoice</h4>
+                        </div>
+                    </div>
+
+                    <div class="row m-0">
+                        <div class="col-6 m-0 py-2" id="seller_div">
+                            <p class="p-0 m-0"><strong>Amit Badia</strong></p>
+                            <p class="p-0 m-0">S/4 Mayur APTS, 40/41, JAJ BHAWAN ROAD, CIVIL LINES JAIPUR 302006</p>
+                            <p class="p-0 m-0">Jaipur - 302006</p>
+                            <p class="p-0 m-0">Rajasthan, India</p>
+                            <p class="p-0 m-0">Phone : 8824451155</p>
+                            <p class="p-0 m-0">Email: AMITBADIA@GMAIL.COM</p>
+                        </div>
+                        <div class="col-6 m-0" id="invoice_div">
+                            <div class="row mo-0">
+                                <div class="col-7 py-2" id="invoice">
+                                    <p class="p-0 m-0">Invoice No:</p>
+                                    <p class="p-0 m-0"><strong><t t-esc="o.name"/></strong></p>
+                                </div>
+                                <div class="col-5 py-2" id="invoice_date">
+                                    <p class="p-0 m-0">Invoice Date:</p>
+                                    <p class="p-0 m-0"><t t-esc="o.invoice_date"/></p>
+                                </div>
+                            </div>
+                            <div class="row mo-0" style="height: 100%">
+                                <div class="col-7 py-2" id="payment">
+                                    <p class="p-0 m-0">Payment Mode: <t>UPI/Wallet</t></p>
+                                    <p class="p-0 m-0">Transaction ID: <t>54654654</t></p>
+                                    <p class="p-0 m-0">Transaction Date: <t t-esc="o.invoice_date"/></p>
+                                </div>
+                                <div class="col-5 py-2" id="payment_amount">
+                                    <p class="p-0 m-0">Amount of Payment</p>
+                                    <p class="p-0 m-0"><t t-esc="o.amount_total"/></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row m-0 pb-4">
+                        <div class="col-6 py-2" id="buyer_div">
+                            <p class="p-0 m-0"><strong><t t-esc="o.partner_id.name"/></strong></p>
+                            <p class="p-0 m-0"><t t-esc="o.partner_id.street">S/4 Mayur APTS, 40/41, JAJ BHAWAN ROAD, CIVIL LINES JAIPUR 302006</t></p>
+                            <p class="p-0 m-0"><t t-esc="o.partner_id.city"/></p>
+                            <p class="p-0 m-0"><t t-esc="o.partner_id.state_id.name"/>, <t t-esc="o.partner_id.country_id.name"/></p>
+                            <p class="p-0 m-0">Phone : <t t-esc="o.partner_id.phone"/></p>
+                            <p class="p-0 m-0">Email: <t t-esc="o.partner_id.email"/></p>
+                        </div>
+                        <div class="col-6 py-2" id="terms_div">
+                            <p class="p-0 m-0">Terms Of Delivery,</p>
+                            <p class="p-0 m-0"><t t-esc="o.invoice_payment_term_id.name"/></p>
+                            <p class="p-0 m-0"><t t-esc="o.narration"/></p>
+                        </div>
+                    </div>
+
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th class="fw-bold">No.</th>
+                                <th class="fw-bold">Description of Products</th>
+                                <th class="fw-bold">HSN/SAC</th>
+                                <th class="fw-bold">Quantity</th>
+                                <th class="fw-bold">Unit</th>
+                                <th class="fw-bold">Rate</th>
+                                <th class="fw-bold">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-set="total_qty" value="0"/>
+                            <t t-foreach="o.invoice_line_ids" t-as="invoice_line">
+                                <tr>
+                                    <td><t t-esc="invoice_line_index + 1"/></td>
+                                    <td>
+                                        <p class="p-0 m-0">
+                                            <strong><t t-esc="invoice_line.name"/></strong>
+                                        </p>
+                                        <p class="p-0 m-0">For Sl No. 2168943124</p>
+                                    </td>
+                                    <td><t t-esc="invoice_line.product_id.hs_code"/></td>
+                                    <td><t t-esc="invoice_line.quantity"/></td>
+                                    <td><t t-esc="invoice_line.product_id.uom_id.name"/></td>
+                                    <td><t t-esc="invoice_line.price_unit"/></td>
+                                    <td><t t-esc="invoice_line.price_subtotal"/></td>
+                                </tr>
+                                <t t-set="total_qty" value="total_qty + invoice_line.quantity"/>
+                            </t>
+
+                            <tr>
+                                <th colspan="2">Total</th>
+                                <th></th>
+                                <th><t t-esc="total_qty"/></th>
+                                <th></th>
+                                <th></th>
+                                <th><t t-esc="o.amount_untaxed"/></th>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="row m-0">
+                        <div class="col">
+                            <p class="m-0 p-0">Amount Chargable (In Words)</p>
+                            <p class="m-0 p-0"><strong>INR Two Thousand One Hundred And Twenty Four Only.</strong></p>
+                        </div>
+                    </div>
+
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th colspan="2">IGST</th>
+                            </tr>
+                            <tr>
+                                <th rowspan="2">HSN/SAC</th>
+                                <th rowspan="2">Taxable Value</th>
+                                <th>Rate</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>54535435</td>
+                                <td>1800</td>
+                                <td>18.00%</td>
+                                <td>324.00</td>
+                            </tr>
+                            <tr>
+                                <th>Total</th>
+                                <th>1800</th>
+                                <th></th>
+                                <th>324.00</th>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="row m-0">
+                        <div class="col">
+                            <p class="m-0 p-0">Tax Amount (In Words):
+                                <strong>INR Three Hundred And Twenty Four Only.</strong>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row my-2">
+                        <div class="col">
+                            <p class="m-0 p-0">Company's Pan : 154346432</p>
+                            <p class="m-0 p-0">Company's GSTIN/UIN : KLA092398KLA</p>
+                            <p class="m-0 p-0">Buyer's State GST Code : 08</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col py-2" id="declaration">
+                            <p class="m-0 p-0">Declaration:</p>
+                            <p class="m-0 p-0">Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,
+                                molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum
+                                numquam blanditiis harum quisquam eius sed odit fugiat iusto fuga praesentium
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 py-2" id="declaration2">
+                            <p class="m-0 p-0">Declaration:</p>
+                            <p class="m-0 p-0">Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,
+                                molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum
+                                numquam blanditiis harum quisquam eius sed odit fugiat iusto fuga praesentium
+                            </p>
+                        </div>
+                        <div class="col-6 py-2" id="signature">
+                            <p>For Tally India Private Ltd.</p>
+                            <p>Signature</p>
+                        </div>
+                    </div>
+                </t>
+            </xpath>
+        </template>
+    </data>
+</odoo>

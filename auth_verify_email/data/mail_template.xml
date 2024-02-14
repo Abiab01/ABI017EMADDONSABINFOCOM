@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="verify_email_template" name="Email Verify">
+        <t t-call="mail.mail_notification_borders">
+            <p>
+                Please find the One-Time-Password to verify your account.<br/><br/>
+                OTP - <strong><t t-esc="otp"/></strong> <br/><br/>
+                NOTE - Please note this OTP is valid for 10 minutes.
+            </p>
+        </t>
+    </template>
+</odoo>

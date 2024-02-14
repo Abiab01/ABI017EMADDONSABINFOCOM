@@ -1,0 +1,51 @@
+<odoo>
+    <data>
+
+        <template id="otp_email_template" name="Email Verify">
+            <t t-call="mail.mail_notification_borders">
+                <p>
+                    Please find the One-Time-Password to verify your account.
+                    <br/>
+                    <br/>
+                    OTP -
+                    <strong>
+                        <t t-esc="otp"/>
+                    </strong>
+                    <br/>
+                    <br/>
+                    NOTE - Please note this OTP is valid for 10 minutes.
+                </p>
+            </t>
+        </template>
+
+
+        <template id="email_otp" inherit_id="auth_signup.fields" name="Sign up - Reset Password">
+            <xpath expr="//div[last()]" position="after">
+                <div class="form-group">
+                    <button type="button" class="btn btn-primary send_otp_button">Send OTP To Create Or Login In The
+                        Account
+                    </button>
+
+                    <div class="otp-message-container" style="display: none; margin-top: 10px;"></div>
+
+                    <input type="text" name="otp" class="form-control otp_box" placeholder="Enter OTP Number"
+                           required="required" widget="zip"/>
+
+                    <button type="button" class="btn btn-primary resend_otp_button" style="margin-top: 10px;">
+                        Resend Email OTP
+                    </button>
+                </div>
+            </xpath>
+        </template>
+
+        <template id="auth_signup_login_buttons" inherit_id="auth_signup.signup" name="Auth Signup Login Buttons">
+            <xpath expr="//div[hasclass('oe_login_buttons')]" position="attributes">
+                <attribute name="style">display: none;</attribute>
+            </xpath>
+            <!--            <xpath expr="//div[hasclass('oe_login_auth')]" position="attributes">-->
+            <!--                <attribute name="style">display: none;</attribute>-->
+            <!--            </xpath>-->
+        </template>
+
+    </data>
+</odoo>

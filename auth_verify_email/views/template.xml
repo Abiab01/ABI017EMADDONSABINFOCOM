@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="blogpost_custom_code_layout" inherit_id="website.layout">
+        <xpath expr="//nav[@id='oe_main_menu_navbar']" position="after">
+            <t t-if="request.env.user.partner_id.email_verified == False">
+                <input type="hidden" id="authmail" t-att-value="request.env.user.email" class="d-none" />
+                <input type="hidden" id="authmailverified" t-att-value="request.env.user.partner_id.email_verified" class="d-none" />
+                <div class="notice text">
+                    <div class="grid-container">
+                        <div class="info">
+                            <i class="fa fa-warning"></i>
+                            <span class="underline-effect">
+                                <p>
+                                    <strong>Thank you for registring with us.</strong>
+                                    To get started, we'll need to verify your email addres.
+                                    <button class="btn btn-primary verify_email_btn">Verify Email</button>
+                                </p>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade popup" id="modalVerifyEmail" tabindex="-1" role="dialog" aria-labelledby="modal1Label" aria-hidden="true">
+                    <div class="modal-dialog modal-sm modal-left popup-inner">
+                        <div class="modal-content">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">Verify Your Email</h4>
+                                </div>
+                                <div class="panel-body">
+                                    <p>
+                                        One time password will be sent to
+                                        <strong id="uEmail"></strong>
+                                        and will be valid for 10 minutes.
+                                    </p>
+                                    <form accept-charset="UTF-8" id="verifyemail" role="form" action="" method="POST" aria-label="Verify Email" enctype="multipart/form-data">
+                                        <input type="hidden" name="csrf_token" id="csrfToken2" t-att-value="request.csrf_token()" />
+                                        <input type="text" name="otp" id="otp" class="d-none form-control form-control-sm" placeholder="Enter One-Time-Password" />
+                                        <span id="verifyError" class="d-none" style="color: red;"></span>
+                                        <br />
+                                        <br />
+                                    </form>
+                                    <input id="subbtn" class="btn button-style btn-block btn-primary" type="submit" value="SEND OTP" />
+                                    <button class="askmelater btn">ASK ME LATER</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+    </template>
+</odoo>

@@ -1,0 +1,202 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <data>
+
+
+    <!--  ____________________ EMPLOYEE RULES _______________-->
+
+        <record id="ir_rule_hr_employee_public_only_own" model="ir.rule">
+            <field name="name">Employee Own Record</field>
+            <field name="model_id" ref="hr.model_hr_employee_public"/>
+            <field name="domain_force">[('employee_id.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4,ref('abi_user_management.group_abi_employee'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+    <!--  ____________________ PROJECT RULES _______________-->
+
+        <record id="ir_rule_project_employee_access" model="ir.rule">
+            <field name="name">ABI Employee can read project if added in team</field>
+            <field name="model_id" ref="project.model_project_project"/>
+            <field name="domain_force">
+[
+    '|',
+    ('privacy_visibility', '!=', 'followers'),
+    '|',
+    ('message_partner_ids', 'in', [user.partner_id.id]),
+    ('members_ids', 'in', user.id),
+
+]
+            </field>
+            <field name="groups" eval="[(4,ref('abi_user_management.group_abi_employee'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="ir_rule_project_task_employee_read_followed_task" model="ir.rule">
+            <field name="name">ABI Employee can read/write Followed/Assigned/His task only</field>
+            <field name="model_id" ref="project.model_project_task"/>
+            <field name="domain_force">
+    [
+        '|',('create_uid', '=', user.id),'&amp;',
+        ('message_partner_ids', 'child_of', [user.partner_id.id]),
+        ('user_ids', 'in', user.id)
+
+    ]
+            </field>
+            <field name="groups" eval="[(4,ref('abi_user_management.group_abi_employee'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+         <record id="ir_rule_task_project_controller_access" model="ir.rule">
+            <field name="name">ABI Project Controller Can create task under private/followed project</field>
+            <field name="model_id" ref="project.model_project_task"/>
+            <field name="domain_force">
+    [
+            '|',
+                '&amp;',
+                    ('project_id', '!=', False),
+                    '|',
+                        ('project_id.privacy_visibility', '!=', 'followers'),
+                        ('project_id.message_partner_ids', 'in', [user.partner_id.id]),
+                '|',
+                    ('message_partner_ids', 'in', [user.partner_id.id]),
+                    # to subscribe check access to the record, follower is not enough at creation
+                    ('user_ids', 'in', user.id)
+    ]
+            </field>
+            <field name="groups" eval="[(4,ref('abi_user_management.group_abi_project_controller'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+    <!--  ____________________ RES PARTNER RULES _______________-->
+
+        <record id="ir_rule_res_partner_restrict_employee_all_access" model="ir.rule">
+            <field name="name">Employee restrict write/create/delete Access</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="groups" eval="[(4,ref('abi_user_management.group_abi_employee'))]"/>
+            <field name="domain_force">[('id', '=',0)]</field>
+            <field name="perm_read" eval="False"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="ir_rule_res_partner_employee_own_access" model="ir.rule">
+            <field name="name">Sale Employee Own Contact Access</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="groups" eval="[(4,ref('abi_user_management.group_abi_employee'))]"/>
+            <field name="domain_force">
+            [
+                '|',('id', '=', user.employee_id.parent_id.user_id.partner_id.id),
+
+                '|',('id','in',[1,2,3,76]),
+                '|',('id','in',user.visible_contact_ids.ids),
+                '|',('id','=',user.partner_id.id),
+
+                '|',('create_uid', '=', user.id),('user_id', '=', user.id)
+            ]
+            </field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+
+        <record id="ir_rule_res_partner_visible_to_selected_users" model="ir.rule">
+            <field name="name">Show Contacts to Visible Users Only</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="global" eval="True"/>
+            <field name="groups" eval="[]"/>
+            <field name="groups" eval="[(4,ref('abi_user_management.group_abi_sale_sales_executive')),(4,ref('abi_user_management.group_abi_sale_team_leader'))]"/>
+            <field name="domain_force">
+            [
+                '|',('message_partner_ids', 'child_of', user.partner_id.id),
+
+                '|',('id', '=', user.partner_id.user_id.partner_id.id),
+                '|',('id', '=', user.team_id.user_id.partner_id.id),
+                '|',('id', 'in', [tm.partner_id.id for tm in user.team_id.member_ids]),
+
+                '|',('id', '=', user.employee_id.parent_id.user_id.partner_id.id),
+
+                '|',('visible_to_users', 'in', user.id),
+                '|',('other_user_ids', 'in', user.id),
+
+                '|',('id','in',[1,2,3]),
+                '|',('id','=',user.partner_id.id),
+
+                '|',('create_uid', '=', user.id),('user_id', '=', user.id)
+            ]
+            </field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="ir_rule_res_partner_own_users_access" model="ir.rule">
+            <field name="name">Sale Executive Own Contact Edit/create  Access</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="groups" eval="[(4,ref('abi_user_management.group_abi_sale_sales_executive')),(3,ref('abi_user_management.group_abi_employee'))]"/>
+            <field name="domain_force">
+            [
+                '|',('create_uid', '=', user.id),('user_id', '=', user.id)
+            ]
+            </field>
+            <field name="perm_read" eval="False"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+
+    <!--  ____________________   CRM LEAD RULES    _______________-->
+
+
+        <record id="ir_rule_crm_lead_se_and_tl_access" model="ir.rule">
+            <field name="name">Sale Executive and Team Lead access</field>
+            <field name="model_id" ref="crm.model_crm_lead"/>
+            <field name="groups" eval="[(4,ref('abi_user_management.group_abi_sale_sales_executive')),(4,ref('abi_user_management.group_abi_sale_team_leader'))]"/>
+            <field name="domain_force">
+            [
+                '|',('other_user_ids', 'in', user.id),('user_id', '=', user.id)
+            ]
+            </field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+    <!--  ____________________   SALE ORDER   _______________-->
+
+        <record id="ir_rule_sale_order_se_and_tl_access" model="ir.rule">
+            <field name="name">Sale Executive and Team Lead access</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="groups" eval="[(4,ref('abi_user_management.group_abi_sale_sales_executive')),(4,ref('abi_user_management.group_abi_employee'))]"/>
+            <field name="domain_force">
+            [
+                '|',('other_user_ids', 'in', user.id),('user_id', '=', user.id)
+            ]
+            </field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

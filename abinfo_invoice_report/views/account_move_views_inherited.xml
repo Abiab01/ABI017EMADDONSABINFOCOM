@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="account_move_form_inherit" model="ir.ui.view">
+            <field name="name">abinfocom.account_move.form</field>
+            <field name="model">account.move</field>
+            <field name="priority">20</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='invoice_date']" position="after">
+                    <field name="invoice_type" readonly="1" force_save="1"/>
+                    <field name="invoice_area_type" readonly="1" force_save="1"/>
+                    <field name="partner_state_id" readonly="1" force_save="1"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <function
+        model="ir.rule"
+        name="_remove_default_odoo_record_rules"
+    />
+     <function
+        model="ir.rule"
+        name="_remove_group_from_menu"
+    />
+</odoo>
